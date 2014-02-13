@@ -49,7 +49,7 @@ angular.module('services', [])
   }]);
 
 var app = angular.module('project', ['services', 'filters']);
-app.controller('GenCtrl', ['$scope', '$http', 'dbVehicleValues', 'dash', function($scope, $http, dbVehicleValues, dash) {
+app.controller('MainCtrl', ['$scope', '$http', 'dbVehicleValues', 'dash', function($scope, $http, dbVehicleValues, dash) {
   var vehicleKeyQueryV1 = {
       year: { menuorder: 5 },
       make: { menuorder: 10 },

@@ -1,0 +1,12 @@
+<div ng-controller="searchViewCtrl">
+  <div ng-controller="searchCategoryCtrl">
+    <div>
+      Search: <input ng-model="customq">
+    </div>
+    <ul class="large-block-grid-4">
+      <li ng-repeat="veh in collection">
+        <p>{{$index}}</p>
+      </li>
+    </ul>
+  </div>
+</div>
