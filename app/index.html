@@ -6,31 +6,33 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>Angular Development</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/vendor.css -->
+    <link rel="stylesheet" href="styles/foundation.min.css">
     <!-- bower:css -->
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
-    <link rel="stylesheet" href="styles/default.css">
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="vehicleSearchAngularApp" class="row">
+  <body ng-app="vehicleSearchAngularApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div ng-include="'views/searchview.html'" class="columns large-6"></div>
-    <div ng-include="'views/search.html'" class="columns large-6"></div>
-    <!-- <div ng-view=""></div> -->
+    <div ng-controller="baseCtrl">
+      <div style="width: 320px">
+        <div ng-include="'views/search-menu-accordion.html'" data-backup-class="columns small-6 large-6"></div>
+      </div>
+      <!-- <div ng-include="'views/search-view.html'" data-backup-class="columns small-6 large-6"></div> -->
+    </div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
+    <!-- <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -38,7 +40,7 @@
 
        ga('create', 'UA-XXXXX-X');
        ga('send', 'pageview');
-    </script>
+    </script> -->
 
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -48,25 +50,42 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/angular/angular.js"></script>
-    <!-- <script src="bower_components/angular-cookies/angular-cookies.js"></script> -->
-    <!-- <script src="bower_components/angular-resource/angular-resource.js"></script> -->
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
-    <!-- <script src="bower_components/angular-scenario/angular-scenario.js"></script> -->
+    <script src="bower_components/angular-scenario/angular-scenario.js"></script>
+    <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <!-- endbower -->
+    <script src="scripts/mm-foundation-tpls-0.1.0.min.js"></script>
     <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <!-- <script src="scripts/app.js"></script> -->
-        <script type="text/javascript">
-        angular.module('vehicleSearchAngularApp', [
-          // 'ngCookies',
-          // 'ngResource',
-          'ngSanitize',
-          'ngRoute'
-        ]);
-        </script>
+      <script type="text/javascript">
+        angular.module('vehicleSearchAngularApp', ['ngSanitize','mm.foundation'])
+        .constant('_', _)
+        .controller('baseCtrl', function ($scope, $http, sourceFactory, dashFactory, collectionFactory) {
+          var vehicleKeys = dashFactory.queryValues(sourceFactory.vehicleKeyV1, 'keyval');
+          var callParams = {
+            f: 'json',
+            show: '100',
+            type: 'used',
+            k: vehicleKeys.toString()
+          };
+          var regCollReady = $scope.$on('collectionReady', function() {
+            console.log('ready to use, after asyn http get response');
+            $scope.list = collectionFactory($scope.mainData).list;
+            $scope.categories = collectionFactory($scope.mainData).menucategories(sourceFactory.vehicleKeyV1); console.log($scope.categories);
+          });
+          // dashFactory.dlocation.protocol() + '://' + dashFactory.dlocation.host() + '/api/?'
+          $http.get('test.json', { params: callParams })
+            .success(function(data) {
+              $scope.mainData = data;
+              $scope.$broadcast('collectionReady');
+          });
+        });
+      </script>
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->        
         <script src="scripts/controllers/searchview.js"></script>
         <script src="scripts/controllers/searchcategory.js"></script>
         <script src="scripts/services/sourcefactory.js"></script>
