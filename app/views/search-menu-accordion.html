@@ -1,11 +1,16 @@
-<div ng-controller="searchCategoryCtrl">
-  <accordion close-others="true">
-  	<accordion-group heading="{{cat}}" ng-repeat="(cat, opt) in categories">
-      <ul class="small-block-grid-2">
-      	<li ng-repeat="(key, count) in opt">
-      		<button class="tiny expand" title="{{count}} vehicles">{{key}}</button>
-      	</li>
+<div ng-controller="menuAccordion">
+  <div class="section-container accordion" data-section="accordion">
+    <section ng-repeat="(cat, opt) in menu.categoriesI">
+      <p class="title" data-section-title>
+        <a href="#" class="small"><span>{{opt.valueLabel}}: </span><span ng-bind-html="menu.uniq($index)" ng-click="menu.toggle($index)"></span></a>
+      </p>
+      <ul class="small-block-grid-2 content" data-section-content>
+        <li ng-repeat="(key, count) in opt.options">
+          <button class="tiny expand" title="{{count}} vehicles" ng-click="menu.filterList(opt.valueKey, key)">{{key}}</button>
+        </li>
       </ul>
-	  </accordion-group>
-  </accordion>
+    </section>
+  </div>
+
+  <a href="/{{menu.query}}" class="button">View {{menu.resultsQty()}} Results</a>
 </div>
