@@ -11,13 +11,15 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/vendor.css -->
-    <link rel="stylesheet" href="styles/foundation.min.css">
+  <!-- <link rel="stylesheet" href="styles/foundation.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/foundation/4.3.2/css/foundation.min.css">
     <!-- bower:css -->
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
   </head>
   <body ng-app="vehicleSearchAngularApp">
     <!--[if lt IE 7]>
@@ -58,40 +60,43 @@
     <script src="bower_components/angular-scenario/angular-scenario.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <!-- endbower -->
-    <script src="scripts/mm-foundation-tpls-0.1.0.min.js"></script>
+  <!-- <script src="scripts/mm-foundation-tpls-0.1.0.min.js"></script> -->
     <!-- endbuild -->
 
       <script type="text/javascript">
-        angular.module('vehicleSearchAngularApp', ['ngSanitize','mm.foundation'])
+        // angular.module('vehicleSearchAngularApp', ['ngSanitize','mm.foundation'])
+        angular.module('vehicleSearchAngularApp', ['ngSanitize'])
         .constant('_', _)
         .controller('baseCtrl', function ($scope, $http, sourceFactory, dashFactory, collectionFactory) {
+          $scope.base = {
+            mainData: []
+          };
           var vehicleKeys = dashFactory.queryValues(sourceFactory.vehicleKeyV1, 'keyval');
           var callParams = {
             f: 'json',
-            show: '100',
+            show: 'all',
             type: 'used',
             k: vehicleKeys.toString()
           };
-          var regCollReady = $scope.$on('collectionReady', function() {
-            console.log('ready to use, after asyn http get response');
-            $scope.list = collectionFactory($scope.mainData).list;
-            $scope.categories = collectionFactory($scope.mainData).menucategories(sourceFactory.vehicleKeyV1); console.log($scope.categories);
-          });
           // dashFactory.dlocation.protocol() + '://' + dashFactory.dlocation.host() + '/api/?'
-          $http.get('test.json', { params: callParams })
+          $http.get('testAll.json', { params: callParams })
             .success(function(data) {
-              $scope.mainData = data;
-              $scope.$broadcast('collectionReady');
-          });
+              $scope.base.mainData = data;
+            });
         });
       </script>
         <!-- build:js({.tmp,app}) scripts/scripts.js -->        
-        <script src="scripts/controllers/searchview.js"></script>
+        <script src="scripts/controllers/menuaccordion.js"></script>
         <script src="scripts/controllers/searchcategory.js"></script>
         <script src="scripts/services/sourcefactory.js"></script>
         <script src="scripts/services/collectionfactory.js"></script>
         <script src="scripts/services/dashfactory.js"></script>
         <script src="scripts/filters/fulltextfilter.js"></script>
         <!-- endbuild -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/foundation/4.3.2/js/foundation.min.js"></script>
+  <script type="text/javascript">
+    jQuery(document).foundation();
+  </script>
 </body>
 </html>
