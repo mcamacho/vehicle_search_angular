@@ -1,0 +1,10 @@
+<div ng-controller="searchViewCtrl">
+  <div>
+    Search: <input ng-model="customq">
+  </div>
+  <ul class="small-block-grid-2 large-block-grid-4">
+    <li ng-repeat="veh in list | fulltextFilter:customq">
+      <p>{{veh.year}}, {{veh.make}} {{veh.model}} {{veh.trim}}, {{veh.exteriorColor}}</p>
+    </li>
+  </ul>
+</div>

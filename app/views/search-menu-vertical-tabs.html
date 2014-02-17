@@ -1,0 +1,11 @@
+<div>
+  <tabset vertical="true">
+    <tab heading="{{cat}}" ng-repeat="(cat, opt) in categories">
+      <ul>
+        <li ng-repeat="(key, count) in opt">
+          <a href="#" title="{{count}} vehicles">{{key}}</a>
+        </li>
+      </ul>
+    </tab>
+  </tabset>
+</div>

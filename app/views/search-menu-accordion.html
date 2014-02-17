@@ -1,0 +1,11 @@
+<div ng-controller="searchCategoryCtrl">
+  <accordion close-others="true">
+  	<accordion-group heading="{{cat}}" ng-repeat="(cat, opt) in categories">
+      <ul class="small-block-grid-2">
+      	<li ng-repeat="(key, count) in opt">
+      		<button class="tiny expand" title="{{count}} vehicles">{{key}}</button>
+      	</li>
+      </ul>
+	  </accordion-group>
+  </accordion>
+</div>
