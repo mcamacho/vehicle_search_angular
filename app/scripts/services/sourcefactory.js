@@ -6,33 +6,52 @@ angular.module('vehicleSearchAngularApp')
       vehicleKeyV1: {
         year: {
           keyval: 'year',
-          menuorder: 5
+          menu: {
+            order: 5,
+            valueLabel: 'Year'
+          }
         },
         make: {
           keyval: 'make',
-          menuorder: 10
+          menu: {
+            order: 10,
+            valueLabel: 'Make'
+          }
         },
         model: {
           keyval: 'model',
-          menuorder: 15
+          menu: {
+            order: 15,
+            valueLabel: 'Model'
+          }
         },
         trim: {
           keyval: 'trim',
-          menuorder: 16
+          menu: {
+            order: 16,
+            valueLabel: 'Trim'
+          }
         },
         standardBody: {
           keyval: 'standard_body',
-          menuorder: 20,
-          viewas: 'body'
+          menu: {
+            order: 20,
+            valueLabel: 'Body'
+          }
         },
         exteriorColor: {
           keyval: 'exterior_color',
-          menuorder: 25,
-          viewas: 'color'
+          menu: {
+            order: 25,
+            valueLabel: 'Color'
+          }
         },
         transmission: {
           keyval: 'transmission',
-          menuorder: 30
+          menu: {
+            order: 30,
+            valueLabel: 'Transmission'
+          }
         },
         price: {
           keyval: 'price',
