@@ -17,7 +17,7 @@
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/location-form.css">
     <!-- endbuild -->
 <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
   </head>
@@ -25,10 +25,10 @@
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-
     <div ng-controller="baseCtrl">
       <div style="width: 320px">
-        <div ng-include="'views/search-menu-accordion.html'" data-backup-class="columns small-6 large-6"></div>
+        <div ng-include="'views/location-form.html'"></div>
+        <div ng-include="'views/search-menu-accordion.html'" ng-show="loc.zipcode"></div>
       </div>
       <!-- <div ng-include="'views/search-view.html'" data-backup-class="columns small-6 large-6"></div> -->
     </div>
@@ -52,40 +52,107 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-mocks/angular-mocks.js"></script>
     <script src="bower_components/angular-scenario/angular-scenario.js"></script>
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="bower_components/angularjs-geolocation/src/geolocation.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
     <!-- endbower -->
+    <script src="scripts/angular-cookie.js"></script>
   <!-- <script src="scripts/mm-foundation-tpls-0.1.0.min.js"></script> -->
     <!-- endbuild -->
 
       <script type="text/javascript">
         // angular.module('vehicleSearchAngularApp', ['ngSanitize','mm.foundation'])
-        angular.module('vehicleSearchAngularApp', ['ngSanitize'])
+        angular.module('vehicleSearchAngularApp', ['ngSanitize','ivpusic.cookie','geolocation'])
         .constant('_', _)
-        .controller('baseCtrl', function ($scope, $http, sourceFactory, dashFactory, collectionFactory) {
-          $scope.base = {
-            mainData: []
-          };
-          var vehicleKeys = dashFactory.queryValues(sourceFactory.vehicleKeyV1, 'keyval');
-          var callParams = {
+        .controller('baseCtrl', function ($scope, $http, ipCookie, geolocation, sourceFactory, dashFactory, collectionFactory, _) {
+          // private variables to be used on server query
+          var cookieParams = {
+            path: '/',
+            expires: 30
+          },
+          callParams = {
             f: 'json',
             show: 'all',
             type: 'used',
-            k: vehicleKeys.toString()
+            k: dashFactory.queryValues(sourceFactory.vehicleKeyV1, 'keyval').toString()
           };
+          // base object on the parent scope contains data for any child 
+          $scope.base = {
+            mainData: []
+          };
+          $scope.loc = {
+            zipcode: ipCookie('zipcode') ? ipCookie('zipcode').toString() : '',
+            radius: parseInt(ipCookie('radius'), 10) || 50,
+            changed: false,
+            disRange: sourceFactory.rangeArray(25, 20, 25)
+          };
+          $scope.cache = {
+            zipcode: $scope.loc.zipcode,
+            radius: $scope.loc.radius
+          };
+          $scope.$watch('loc.zipcode', locChanges);
+          $scope.$watch('loc.radius', locChanges);
+          $scope.submit = function () {
+            $scope.loc.changed = false;
+            updateCookies();
+            serverCall();
+          };
+          // error listener
+          $scope.$on('error', function () {
+            console.log('on', arguments)
+          });
+          // update zipcode if undefined or run the app
+          if (_.isEmpty($scope.loc.zipcode)) {
+            console.log('expecting zipcode value from geo or user ');
+            geolocation.getLocation().then(
+              function (data){
+                console.log('geo ready',data);
+                var geo = { lat:data.coords.latitude, long:data.coords.longitude };
+                geo.url = 'http://api.geonames.org/findNearbyPostalCodesJSON?lat='+geo.lat+'&lng='+geo.long+'&username=macamanga';
+                $http.get(geo.url)
+                  .success(function (data) {
+                    $scope.loc.zipcode = data.postalCodes[0].postalCode;
+                  });
+              }, function () {
+                console.log('error',arguments)
+              });
+          } else {
+            console.log('ready to run the zipcode dependent app for ',$scope.loc.zipcode);
+            serverCall();
+          }
+
+          function locChanges(prev, current, scope) {
+            if (prev === undefined) {
+              return false;
+            }
+            var key = _.invert(scope.loc)[prev];
+            if ($scope.cache[key] !== $scope.loc[key]) {
+              $scope.cache[key] = $scope.loc[key];
+              $scope.loc.changed = true;
+            }
+          }
+
+          function updateCookies() {
+            ipCookie('zipcode', $scope.loc.zipcode, cookieParams);
+            ipCookie('radius', $scope.loc.radius.toString(), cookieParams);
+          }
+
+          function serverCall() {
+            $http.get('testAll.json', { params: callParams })
+              .success(function (data) {
+                $scope.base.mainData = data;
+              });
+          }
           // dashFactory.dlocation.protocol() + '://' + dashFactory.dlocation.host() + '/api/?'
-          $http.get('testAll.json', { params: callParams })
-            .success(function(data) {
-              $scope.base.mainData = data;
-            });
         });
       </script>
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->        
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/directives/directives.js"></script>
         <script src="scripts/controllers/menuaccordion.js"></script>
         <script src="scripts/controllers/searchcategory.js"></script>
         <script src="scripts/services/sourcefactory.js"></script>
