@@ -46,7 +46,7 @@ angular.module('vehicleSearchAngularApp')
         this.categoriesI = collectionFactory(this.listI).menucategories(sourceFactory.vehicleKeyV1);
       }
     };
-    $scope.$watch('menu.filterObj', function(argument) {
+    $scope.$watch('menu.filterObj', function() {
       $scope.menu.getQuery();
       $scope.menu.updateModel();
     }, true);
