@@ -44,12 +44,36 @@ angular.module('vehicleSearchAngularApp')
       updateModel: function() {
         this.listI = _.isEmpty(this.filterObj) ? this.listC : _.where(this.listC, this.filterObj);
         this.categoriesI = collectionFactory(this.listI).menucategories(sourceFactory.vehicleKeyV1);
+      },
+      getSlider: function(key) {
+        var valArray = _.pluck(this.listI, key);
+        var cleanArray = [];
+        for (var i = valArray.length - 1; i >= 0; i--) {
+          if (valArray[i].search(/[a-zA-Z]/) < 0) {
+            cleanArray.push(parseInt(valArray[i].replace(',', ''), 10));
+          }
+        }
+        var min = Math.floor(_.min(cleanArray) / 1000) * 1000;
+        var max = Math.ceil(_.max(cleanArray) / 1000) * 1000;
+        return {
+          from: min,
+          to: max,
+          step: 1000,
+          min: min,
+          max: max
+        };
       }
     };
+    // listen for filter changes
     $scope.$watch('menu.filterObj', function() {
       $scope.menu.getQuery();
       $scope.menu.updateModel();
     }, true);
+    // listen for slider changes
+    $scope.$watch('menu.slider', function () {
+      console.log($scope.menu.slider);
+    })
+    // init the accordion model
     $scope.$watch('base', function() {
       var mainData = $scope.base.mainData;
       if (!_.isEmpty(mainData)) {
@@ -57,6 +81,12 @@ angular.module('vehicleSearchAngularApp')
           listC: mainData,
           listI: mainData,
           categoriesI: collectionFactory(mainData).menucategories(sourceFactory.vehicleKeyV1)
+        });
+        _.assign($scope.menu, {
+          slider: {
+            price: $scope.menu.getSlider('price'),
+            mileage: $scope.menu.getSlider('mileage')
+          }
         });
       }
     }, true);

@@ -14,6 +14,7 @@
   <!-- <link rel="stylesheet" href="styles/foundation.min.css"> -->
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/foundation/4.3.2/css/foundation.min.css">
     <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/nouislider/jquery.nouislider.css">
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
@@ -48,9 +49,9 @@
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
-
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
@@ -60,6 +61,8 @@
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/angularjs-geolocation/src/geolocation.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/nouislider/jquery.nouislider.js"></script>
+    <script src="bower_components/angular-nouislider/src/nouislider.js"></script>
     <!-- endbower -->
     <script src="scripts/angular-cookie.js"></script>
   <!-- <script src="scripts/mm-foundation-tpls-0.1.0.min.js"></script> -->
@@ -67,7 +70,7 @@
 
       <script type="text/javascript">
         // angular.module('vehicleSearchAngularApp', ['ngSanitize','mm.foundation'])
-        angular.module('vehicleSearchAngularApp', ['ngSanitize','ivpusic.cookie','geolocation'])
+        angular.module('vehicleSearchAngularApp', ['ngSanitize','ivpusic.cookie','geolocation', 'nouislider'])
         .constant('_', _)
         .controller('baseCtrl', function ($scope, $http, ipCookie, geolocation, sourceFactory, dashFactory, collectionFactory, _) {
           // private variables to be used on server query
@@ -160,7 +163,7 @@
         <script src="scripts/services/dashfactory.js"></script>
         <script src="scripts/filters/fulltextfilter.js"></script>
         <!-- endbuild -->
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script> -->
   <script src="http://cdnjs.cloudflare.com/ajax/libs/foundation/4.3.2/js/foundation.min.js"></script>
   <script type="text/javascript">
     jQuery(document).foundation();

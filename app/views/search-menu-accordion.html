@@ -12,6 +12,12 @@
         </ul>
       </div>
     </section>
+    <section ng-if="menu.slider">
+      <div class="labelTxt">Price: $<span class="price-from">{{menu.slider.price.from | number}}</span> - $<span class="price-to">{{menu.slider.price.to | number}}</span></div>
+      <div slider ng-from="menu.slider.price.from" ng-to="menu.slider.price.to" start={{menu.slider.price.min}} end={{menu.slider.price.max}} step={{menu.slider.price.step}}></div>
+      <div class="labelTxt">Mileage: <span class="mileage-from">{{menu.slider.mileage.from | number}}</span>mi. - <span class="mileage-to">{{menu.slider.mileage.to | number}}</span>mi.</div>
+      <div slider ng-from="menu.slider.mileage.from" ng-to="menu.slider.mileage.to" start={{menu.slider.mileage.min}} end={{menu.slider.mileage.max}} step={{menu.slider.mileage.step}}></div>
+    </section>
   </div>
   <a href="{home}/vehicle-search-22/#/{{menu.query}}" class="button expand">View {{menu.resultsQty()}} Results</a>
 </div>

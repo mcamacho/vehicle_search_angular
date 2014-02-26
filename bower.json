@@ -23,6 +23,9 @@
     "angular-scenario": "1.2.14-build.2318+sha.2cd87db",
     "lodash": "~2.4.1",
     "angularjs-geolocation": "~0.1.1",
-    "angular-touch": "~1.2.13"
+    "angular-touch": "~1.2.13",
+    "nouislider": "~5.0.0",
+    "angular-nouislider": "~0.2.3",
+    "jquery": "~2.1.0"
   }
 }
