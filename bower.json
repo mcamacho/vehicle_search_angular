@@ -14,14 +14,15 @@
     "tests"
   ],
   "dependencies": {
-    "angular-cookies": "1.2.13-build.2262+sha.a9fcb0d",
-    "angular-resource": "1.2.13-build.2262+sha.a9fcb0d",
-    "angular-route": "1.2.13-build.2262+sha.a9fcb0d",
-    "angular-sanitize": "1.2.13-build.2262+sha.a9fcb0d",
+    "angular-resource": "1.2.14-build.2318+sha.2cd87db",
+    "angular-route": "1.2.14-build.2318+sha.2cd87db",
+    "angular-sanitize": "1.2.14-build.2318+sha.2cd87db",
     "es5-shim": "~2.3.0",
     "json3": "~3.3.0",
-    "angular-mocks": "1.2.13-build.2262+sha.a9fcb0d",
-    "angular-scenario": "1.2.13-build.2262+sha.a9fcb0d",
-    "lodash": "~2.4.1"
+    "angular-mocks": "1.2.14-build.2318+sha.2cd87db",
+    "angular-scenario": "1.2.14-build.2318+sha.2cd87db",
+    "lodash": "~2.4.1",
+    "angularjs-geolocation": "~0.1.1",
+    "angular-touch": "~1.2.13"
   }
 }
