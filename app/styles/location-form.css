@@ -1,0 +1,9 @@
+/*location-form style sheet*/
+#location-form { background-color: #efefef; border: 1px solid #ccc; padding: 0.5em; color: #333; }
+#location-form form { margin-bottom: 0; }
+#location-form .loclabel { width: 25%; padding-right: 0; font-size: 13px; }
+#location-form .locinput { width: 21% ; padding-left: 0; }
+#location-form .locinput input { padding: 0.2em 0.5em; height: inherit; }
+#location-form .locfield { margin: 0; font-size: 13px; }
+#location-form .division { width: 8%; text-align: center; }
+#location-form .submit { margin-top: 0.5em; }

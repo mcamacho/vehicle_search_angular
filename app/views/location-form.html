@@ -1,0 +1,13 @@
+<div id="location-form">
+<form name="locForm" ng-submit="submit()">
+  <table><tbody><tr>
+    <td class="loclabel">Postal Code</td>
+    <td class="locinput"><input class="locfield" type="text" name="zipcode" placeholder="00000" inputmode="numeric" ng-model="loc.zipcode" ng-minlength="5" ng-maxlength="5" ng-pattern="/[0-9]{5,5}/" mk-focus="locForm.zipcode.$valid" required></td>
+    <td class="division">|</td>
+    <td class="loclabel">Miles Range</td>
+    <td class="locinput"><select class="locfield" name="radius" ng-model="loc.radius" ng-options="opt for opt in loc.disRange"></select></td>
+    </tr></tbody></table>
+  <input class="button small expand submit" type="submit" value="Submit Changes to Search" ng-show="loc.changed">
+</form>
+<p ng-hide="loc.zipcode">Please fill out the Zipcode field,<br>or enable Location</p>
+</div>
