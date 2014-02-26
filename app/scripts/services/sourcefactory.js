@@ -2,6 +2,13 @@
 
 angular.module('vehicleSearchAngularApp')
   .factory('sourceFactory', function() {
+    var _rangeArray = function (step, qty, min) {
+      var range = [];
+      while (qty--) {
+        range.push(qty * step + min);
+      }
+      return range.reverse();
+    };
     return {
       vehicleKeyV1: {
         year: {
@@ -73,6 +80,7 @@ angular.module('vehicleSearchAngularApp')
         evoxId: {
           keyval: 'evox_id'
         }
-      }
+      },
+      rangeArray: _rangeArray
     };
   });
