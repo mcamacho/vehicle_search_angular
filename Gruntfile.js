@@ -376,8 +376,19 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.registerTask('notest', [
-    'newer:jshint',
-    'build'
+  grunt.registerTask('buildcore', [
+    'clean:dist',
+    'useminPrepare',
+    'concurrent:dist',
+    'autoprefixer',
+    'concat',
+    'ngmin',
+    'copy:dist',
+    'cdnify',
+    'cssmin',
+    'uglify',
+    'rev',
+    'usemin',
+    'htmlmin'
   ]);
 };
