@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('vehicleSearchAngularApp')
-  .controller('menuAccordion', function ($scope, _, collectionFactory, sourceFactory) {
+  .controller('menuAccordion', function ($scope, _, collectionFactory, sourceFactory, $sce) {
     $scope.menu = {
       // initial values
+      active: false,
       listI: [],
       categoriesI: {},
       filterObj: {},
@@ -26,7 +27,7 @@ angular.module('vehicleSearchAngularApp')
             html = html + '<span class="remove"> disable</span>';
           }
         }
-        return html;
+        return $sce.trustAsHtml(html);
       },
       toggle: function(index) {
         var valueKey = this.categoriesI[index].valueKey;
@@ -38,11 +39,27 @@ angular.module('vehicleSearchAngularApp')
       getQuery: function() {
         // this.query = this.queryArray.join('/');
         this.query = _.map(this.filterObj, function(value, key) {
-          return key + '=' + value;
+          return key.replace(/([A-Z])/,'_$1').toLowerCase() + '=' + value;
         }).join('/');
       },
       updateModel: function() {
-        this.listI = _.isEmpty(this.filterObj) ? this.listC : _.where(this.listC, this.filterObj);
+        function rangeF(value) {
+          return value.indexOf(',') > -1;
+        }
+        var filter = _.omit(this.filterObj, rangeF);
+        var range = _.pick(this.filterObj, rangeF);
+        this.listI = _.isEmpty(filter) ? this.listC : _.where(this.listC, filter);
+        if (!_.isEmpty(range)) {
+          this.listI = _.filter(this.listI, function (obj) {
+            var filReturn = [];
+            for (var ra in range) {
+              var rangeArray = range[ra].split(',');
+              var objValue = obj[ra].search(/[a-zA-Z]/) > -1 ? -1 : parseInt(obj[ra].replace(',',''), 10);
+              filReturn.push(objValue >= parseInt(rangeArray[0], 10) && objValue <= parseInt(rangeArray[1], 10));
+            }
+            return _.indexOf(filReturn, false) > -1 ? false : true;
+          });
+        }
         this.categoriesI = collectionFactory(this.listI).menucategories(sourceFactory.vehicleKeyV1);
       },
       getSlider: function(key) {
@@ -70,12 +87,26 @@ angular.module('vehicleSearchAngularApp')
       $scope.menu.updateModel();
     }, true);
     // listen for slider changes
-    $scope.$watch('menu.slider', function () {
-      console.log($scope.menu.slider);
-    })
+    $scope.$watch('menu.slider', function (previous, current) {
+      if (previous && current) {
+        for (var key in previous) {
+          if (!_.isEqual(previous[key], current[key])) {
+            $scope.menu.filterObj[key] = $scope.menu.slider[key].from + ',' + $scope.menu.slider[key].to;
+          }
+        }
+      }
+    }, true);
+    $scope.$watch('loc.changed', function () {
+      console.log($scope.loc.changed);
+      if ($scope.loc.changed) {
+        $scope.menu.active = false;
+      }
+    }, true);
     // init the accordion model
-    $scope.$watch('base', function() {
+    $scope.$watch('base.mainData', function() {
+      console.log('watch mainData');
       var mainData = $scope.base.mainData;
+      $scope.menu.filterObj = {};
       if (!_.isEmpty(mainData)) {
         _.assign($scope.menu, {
           listC: mainData,
@@ -86,8 +117,9 @@ angular.module('vehicleSearchAngularApp')
           slider: {
             price: $scope.menu.getSlider('price'),
             mileage: $scope.menu.getSlider('mileage')
-          }
+          },
+          active: true
         });
       }
-    }, true);
+    }, false);
   });
