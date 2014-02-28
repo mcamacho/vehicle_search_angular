@@ -9,23 +9,18 @@
     <title>Angular Development</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css styles/vendor.css -->
-  <!-- <link rel="stylesheet" href="styles/foundation.min.css"> -->
-  <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/foundation/4.3.2/css/foundation.min.css">
-    <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/nouislider/jquery.nouislider.css">
-    <!-- endbower -->
-    <!-- endbuild -->
+    <script src="http://vw-test.wpdlr.co/wp-content/themes/_fdt/js/custom.modernizr.js"></script>
+    <script src="http://vw-test.wpdlr.co/wp-includes/js/jquery/jquery.js?ver=1.10.2"></script>
+    <script src="http://vw-test.wpdlr.co/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1"></script>
+
+    <link href="//cdn.wpdlr.co/assets/general/css/foundation/worldauto.css" rel="stylesheet">
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/location-form.css">
+    <link rel="stylesheet" href="styles/search-menu-accordion.css">
     <!-- endbuild -->
-<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
+    <link href="http://cdn.wpdlr.co/assets/general/js/nouislider/jquery.nouislider.min.css" rel="stylesheet">
   </head>
   <body ng-app="vehicleSearchAngularApp">
-    <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
     <div ng-controller="baseCtrl">
       <div style="width: 320px">
         <div ng-include="'views/location-form.html'"></div>
@@ -34,139 +29,117 @@
       <!-- <div ng-include="'views/search-view.html'" data-backup-class="columns small-6 large-6"></div> -->
     </div>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-    <!-- <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script> -->
-
-    <!--[if lt IE 9]>
-    <script src="bower_components/es5-shim/es5-shim.js"></script>
-    <script src="bower_components/json3/lib/json3.min.js"></script>
-    <![endif]-->
+    <script src="http://cdn.wpdlr.co/assets/general/js/nouislider/jquery.nouislider.min.js"></script>
+    <script src="http://cdn.wpdlr.co.s3.amazonaws.com/assets/general/js/angular/angular.min.js"></script>
+    <script src="http://cdn.wpdlr.co.s3.amazonaws.com/assets/general/js/lodash/lodash.min.js"></script>
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-mocks/angular-mocks.js"></script>
-    <script src="bower_components/angular-scenario/angular-scenario.js"></script>
-    <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/angularjs-geolocation/src/geolocation.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
-    <script src="bower_components/nouislider/jquery.nouislider.js"></script>
     <script src="bower_components/angular-nouislider/src/nouislider.js"></script>
     <!-- endbower -->
     <script src="scripts/angular-cookie.js"></script>
-  <!-- <script src="scripts/mm-foundation-tpls-0.1.0.min.js"></script> -->
     <!-- endbuild -->
 
-      <script type="text/javascript">
-        // angular.module('vehicleSearchAngularApp', ['ngSanitize','mm.foundation'])
-        angular.module('vehicleSearchAngularApp', ['ngSanitize','ivpusic.cookie','geolocation', 'nouislider'])
-        .constant('_', _)
-        .controller('baseCtrl', function ($scope, $http, ipCookie, geolocation, sourceFactory, dashFactory, collectionFactory, _) {
-          // private variables to be used on server query
-          var cookieParams = {
-            path: '/',
-            expires: 30
-          },
-          callParams = {
-            f: 'json',
-            show: 'all',
-            type: 'used',
-            k: dashFactory.queryValues(sourceFactory.vehicleKeyV1, 'keyval').toString()
-          };
-          // base object on the parent scope contains data for any child 
-          $scope.base = {
-            mainData: []
-          };
-          $scope.loc = {
-            zipcode: ipCookie('zipcode') ? ipCookie('zipcode').toString() : '',
-            radius: parseInt(ipCookie('radius'), 10) || 50,
-            changed: false,
-            disRange: sourceFactory.rangeArray(25, 20, 25)
-          };
-          $scope.cache = {
-            zipcode: $scope.loc.zipcode,
-            radius: $scope.loc.radius
-          };
-          $scope.$watch('loc.zipcode', locChanges);
-          $scope.$watch('loc.radius', locChanges);
-          $scope.submit = function () {
-            $scope.loc.changed = false;
-            updateCookies();
-            serverCall();
-          };
-          // error listener
-          $scope.$on('error', function () {
-            console.log('on', arguments)
-          });
-          // update zipcode if undefined or run the app
-          if (_.isEmpty($scope.loc.zipcode)) {
-            console.log('expecting zipcode value from geo or user ');
-            geolocation.getLocation().then(
-              function (data){
-                console.log('geo ready',data);
-                var geo = { lat:data.coords.latitude, long:data.coords.longitude };
-                geo.url = 'http://api.geonames.org/findNearbyPostalCodesJSON?lat='+geo.lat+'&lng='+geo.long+'&username=macamanga';
-                $http.get(geo.url)
-                  .success(function (data) {
-                    $scope.loc.zipcode = data.postalCodes[0].postalCode;
-                  });
-              }, function () {
-                console.log('error',arguments)
-              });
-          } else {
-            console.log('ready to run the zipcode dependent app for ',$scope.loc.zipcode);
-            serverCall();
-          }
-
-          function locChanges(prev, current, scope) {
-            if (prev === undefined) {
-              return false;
-            }
-            var key = _.invert(scope.loc)[prev];
-            if ($scope.cache[key] !== $scope.loc[key]) {
-              $scope.cache[key] = $scope.loc[key];
-              $scope.loc.changed = true;
-            }
-          }
-
-          function updateCookies() {
-            ipCookie('zipcode', $scope.loc.zipcode, cookieParams);
-            ipCookie('radius', $scope.loc.radius.toString(), cookieParams);
-          }
-
-          function serverCall() {
-            $http.get('testAll.json', { params: callParams })
-              .success(function (data) {
-                $scope.base.mainData = data;
-              });
-          }
-          // dashFactory.dlocation.protocol() + '://' + dashFactory.dlocation.host() + '/api/?'
+    <script type="text/javascript">
+      angular.module('vehicleSearchAngularApp', ['ivpusic.cookie','geolocation', 'nouislider'])
+      .constant('_', _)
+      .controller('baseCtrl', function ($scope, $http, ipCookie, geolocation, sourceFactory, dashFactory, collectionFactory, _) {
+        // private variables to be used on server query
+        var cookieParams = {
+          path: '/',
+          expires: 30
+        },
+        callParams = {
+          f: 'json',
+          show: 'all',
+          type: 'used',
+          k: dashFactory.queryValues(sourceFactory.vehicleKeyV1, 'keyval').toString()
+        };
+        // base object on the parent scope contains data for any child 
+        $scope.base = {
+          mainData: []
+        };
+        $scope.loc = {
+          zipcode: ipCookie('zipcode') ? ipCookie('zipcode').toString() : '',
+          radius: parseInt(ipCookie('radius'), 10) || 50,
+          changed: false,
+          disRange: sourceFactory.rangeArray(25, 20, 25)
+        };
+        $scope.cache = {
+          zipcode: $scope.loc.zipcode,
+          radius: $scope.loc.radius
+        };
+        $scope.$watch('loc.zipcode', locChanges);
+        $scope.$watch('loc.radius', locChanges);
+        $scope.submit = function () {
+          $scope.loc.changed = false;
+          updateCookies();
+          serverCall();
+        };
+        // error listener
+        $scope.$on('error', function () {
+          console.log('on', arguments)
         });
-      </script>
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/directives/directives.js"></script>
-        <script src="scripts/controllers/menuaccordion.js"></script>
-        <script src="scripts/controllers/searchcategory.js"></script>
-        <script src="scripts/services/sourcefactory.js"></script>
-        <script src="scripts/services/collectionfactory.js"></script>
-        <script src="scripts/services/dashfactory.js"></script>
-        <script src="scripts/filters/fulltextfilter.js"></script>
-        <!-- endbuild -->
-  <!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script> -->
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/foundation/4.3.2/js/foundation.min.js"></script>
-  <script type="text/javascript">
-    jQuery(document).foundation();
-  </script>
-</body>
+        // update zipcode if undefined or run the app
+        if (_.isEmpty($scope.loc.zipcode)) {
+          console.log('expecting zipcode value from geo or user ');
+          geolocation.getLocation().then(
+            function (data){
+              console.log('geo ready',data);
+              var geo = { lat:data.coords.latitude, long:data.coords.longitude };
+              geo.url = 'http://api.geonames.org/findNearbyPostalCodesJSON?lat='+geo.lat+'&lng='+geo.long+'&username=macamanga';
+              $http.get(geo.url)
+                .success(function (data) {
+                  $scope.loc.zipcode = data.postalCodes[0].postalCode;
+                });
+            }, function () {
+              console.log('error',arguments)
+            });
+        } else {
+          console.log('ready to run the zipcode dependent app for ',$scope.loc.zipcode);
+          serverCall();
+        }
+
+        function locChanges(prev, current, scope) {
+          if (prev === undefined) {
+            return false;
+          }
+          var key = _.invert(scope.loc)[prev];
+          if ($scope.cache[key] !== $scope.loc[key]) {
+            $scope.cache[key] = $scope.loc[key];
+            $scope.loc.changed = true;
+          }
+        }
+
+        function updateCookies() {
+          ipCookie('zipcode', $scope.loc.zipcode, cookieParams);
+          ipCookie('radius', $scope.loc.radius.toString(), cookieParams);
+        }
+
+        function serverCall() {
+          $http.get('testAll.json', { params: callParams })
+            .success(function (data) {
+              $scope.base.mainData = data;
+            });
+        }
+        // dashFactory.dlocation.protocol() + '://' + dashFactory.dlocation.host() + '/api/?'
+      });
+    </script>
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/directives/directives.js"></script>
+    <script src="scripts/controllers/menuaccordion.js"></script>
+    <script src="scripts/controllers/searchcategory.js"></script>
+    <script src="scripts/services/sourcefactory.js"></script>
+    <script src="scripts/services/collectionfactory.js"></script>
+    <script src="scripts/services/dashfactory.js"></script>
+    <script src="scripts/filters/fulltextfilter.js"></script>
+    <!-- endbuild -->
+
+    <script src="//cdn.wpdlr.co/assets/general/js/foundation/foundation.min.js" defer="" async=""></script>
+    <script style="text/javascript">
+      window.onload = function() { jQuery(document).foundation(); };
+    </script>
+  </body>
 </html>
