@@ -32,13 +32,13 @@ angular.module('vehicleSearchAngularApp')
             valueLabel: 'Model'
           }
         },
-        trim: {
-          keyval: 'trim',
-          menu: {
-            order: 16,
-            valueLabel: 'Trim'
-          }
-        },
+        // trim: {
+        //   keyval: 'trim',
+        //   menu: {
+        //     order: 16,
+        //     valueLabel: 'Trim'
+        //   }
+        // },
         standardBody: {
           keyval: 'standard_body',
           menu: {
