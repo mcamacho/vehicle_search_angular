@@ -1,0 +1,39 @@
+<div id="menu-list" ng-controller="menuAccordion">
+  <div class="section-container tabs" data-section="tabs" ng-class="{ menuActive:menu.active }">
+    <section class="active">
+      <p class="title" data-section-title><a href="#">Filter By</a></p>
+      <div class="content" data-section-content>
+        <div class="section-container accordion" data-section="accordion">
+          <section ng-repeat="(cat, opt) in menu.categoriesI" ng-show="menu.current === -1 || menu.current === $index">
+            <p class="title" data-section-title ng-click="menu.setCurrent($index)">
+              <a href="#" class="small"><span>{{opt.valueLabel}}: </span><span ng-bind-html="menu.uniq($index)" ng-click="menu.removeOption($index)"></span><span class="remove"><i ng-show="menu.current!==$index" class="foundicon-plus"></i></span><span class="remove"><i ng-show="menu.current===$index" class="foundicon-minus"></i></span></a>
+            </p>
+            <div class="content" data-section-content>
+              <ul class="small-block-grid-1">
+                <li ng-repeat="(key, count) in opt.options">
+                  <button class="small expand" title="{{count}} vehicles" ng-click="menu.filterList(opt.valueKey, key)">{{key}}</button>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+    <section>
+      <p class="title" data-section-title><a href="#">Price/Mileage</a></p>
+      <div class="content" data-section-content>
+        <div class="menu-slider" ng-if="menu.active">
+          <div class="labelTxt">Price: $<span class="price-from">{{menu.slider.price.from | number}}</span> - $<span class="price-to">{{menu.slider.price.to | number}}</span></div>
+          <div>
+            <div slider ng-from="menu.slider.price.from" ng-to="menu.slider.price.to" start={{menu.slider.price.min}} end={{menu.slider.price.max}} step={{menu.slider.price.step}}></div>
+          </div>
+          <div class="labelTxt">Mileage: <span class="mileage-from">{{menu.slider.mileage.from | number}}</span>mi. - <span class="mileage-to">{{menu.slider.mileage.to | number}}</span>mi.</div>
+          <div>
+            <div slider ng-from="menu.slider.mileage.from" ng-to="menu.slider.mileage.to" start={{menu.slider.mileage.min}} end={{menu.slider.mileage.max}} step={{menu.slider.mileage.step}}></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <a href="{home}/vehicle-search/#/{{menu.query}}" class="button expand no-margin-bottom">View {{menu.resultsQty()}} Results</a>
+  </div>
+</div>
