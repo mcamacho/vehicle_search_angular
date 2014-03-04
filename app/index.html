@@ -13,7 +13,8 @@
     <script src="http://vw-test.wpdlr.co/wp-includes/js/jquery/jquery.js?ver=1.10.2"></script>
     <script src="http://vw-test.wpdlr.co/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1"></script>
 
-    <link href="//cdn.wpdlr.co/assets/general/css/foundation/worldauto.css" rel="stylesheet">
+    <link href="http://vw-test.wpdlr.co/wp-content/themes/_fdt/css/worldauto.css" rel="stylesheet">
+    <link href="//cdn.wpdlr.co/assets/general/css/foundation/general_enclosed_foundicons.css" rel="stylesheet">
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/location-form.css">
     <link rel="stylesheet" href="styles/search-menu-accordion.css">
@@ -24,7 +25,7 @@
     <div ng-controller="baseCtrl">
       <div style="width: 320px">
         <div ng-include="'views/location-form.html'"></div>
-        <div ng-include="'views/search-menu-accordion.html'" ng-show="loc.zipcode"></div>
+        <div ng-include="'views/search-menu-tabs-accordion.html'"></div>
       </div>
       <!-- <div ng-include="'views/search-view.html'" data-backup-class="columns small-6 large-6"></div> -->
     </div>
@@ -123,7 +124,6 @@
               $scope.base.mainData = data;
             });
         }
-        // dashFactory.dlocation.protocol() + '://' + dashFactory.dlocation.host() + '/api/?'
       });
     </script>
 
