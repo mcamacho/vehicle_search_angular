@@ -3,20 +3,20 @@
 angular.module('vehicleSearchAngularApp')
   .controller('menuAccordion', function ($scope, _, collectionFactory, sourceFactory, $sce) {
     $scope.menu = {
-      // initial values
-      active: false,
-      listI: [],
-      categoriesI: {},
-      filterObj: {},
-      // queryArray: [],
-      query: '',
-      // UI methods
+      // UI methods --------------------------
+      // toggle menu.current among index:open and -1:closed
+      setCurrent: function(index) {
+        this.current = this.current === index ? -1 : index;
+      },
+      // returns list collection amount
       resultsQty: function() {
         return this.listI ? this.listI.length : '0';
       },
+      // updates filterObj with a new key value pair
       filterList: function(valueKey, key) {
         this.filterObj[valueKey] = key;
       },
+      //updates category header if only one option is available
       uniq: function(index) {
         var cat = this.categoriesI[index],
           options = _.keys(cat.options),
@@ -24,24 +24,23 @@ angular.module('vehicleSearchAngularApp')
         if (options.length === 1) {
           html = '<span>' + options[0] + '</span>';
           if (_.has(this.filterObj, cat.valueKey)) {
-            html = html + '<span class="remove"> disable</span>';
+            html = html + '<span> <i class="foundicon-remove"></i> </span>';
           }
         }
         return $sce.trustAsHtml(html);
       },
-      toggle: function(index) {
-        var valueKey = this.categoriesI[index].valueKey;
-        if (_.has(this.filterObj, valueKey)) {
-          this.filterObj = _.omit(this.filterObj, valueKey);
-        }
+      // removes filter option from filterObj
+      removeOption: function(index) {
+        this.filterObj = _.omit(this.filterObj, this.categoriesI[index].valueKey);
       },
-      // internal methods
+      // internal methods --------------------------
+      // constructs GET query string
       getQuery: function() {
-        // this.query = this.queryArray.join('/');
         this.query = _.map(this.filterObj, function(value, key) {
           return key.replace(/([A-Z])/,'_$1').toLowerCase() + '=' + value;
         }).join('/');
       },
+      // recreates categoriesI based on filterObj
       updateModel: function() {
         function rangeF(value) {
           return value.indexOf(',') > -1;
@@ -62,6 +61,7 @@ angular.module('vehicleSearchAngularApp')
         }
         this.categoriesI = collectionFactory(this.listI).menucategories(sourceFactory.vehicleKeyV1);
       },
+      // returns object config to init slider input
       getSlider: function(key) {
         var valArray = _.pluck(this.listI, key);
         var cleanArray = [];
@@ -81,12 +81,16 @@ angular.module('vehicleSearchAngularApp')
         };
       }
     };
-    // listen for filter changes
+    // listen for filter changes ---------------------
     $scope.$watch('menu.filterObj', function() {
+      // clean current property, used in accordion display
+      $scope.menu.current = -1;
+      // calls the method to recreate the query string for the results button
       $scope.menu.getQuery();
+      // calls the method to recreate the categoriesI model
       $scope.menu.updateModel();
     }, true);
-    // listen for slider changes
+    // listen for slider changes ---------------------
     $scope.$watch('menu.slider', function (previous, current) {
       if (previous && current) {
         for (var key in previous) {
@@ -96,8 +100,8 @@ angular.module('vehicleSearchAngularApp')
         }
       }
     }, true);
+    // listen for location module changes, to toggle active, who is used to reinitiate sliders
     $scope.$watch('loc.changed', function () {
-      console.log($scope.loc.changed);
       if ($scope.loc.changed) {
         $scope.menu.active = false;
       }
