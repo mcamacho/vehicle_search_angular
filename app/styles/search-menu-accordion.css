@@ -2,3 +2,5 @@
 #menu-list .menu-slider { font-size: 0.875em; padding: 0.5em 1em; margin-bottom:1.25em; border: 1px solid #ccc; background-color: #efefef; color: #333; }
 #menu-list .menu-slider>div { padding: 0 0.5em 0.5em; }
 #menu-list .menu-slider .labelTxt { padding-left: 0; }
+#menu-list .current { display: block !important; }
+#menu-list span.remove { float: right; }
