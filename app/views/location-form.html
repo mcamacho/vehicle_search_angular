@@ -1,4 +1,5 @@
 <div id="location-form">
+  <p class="loc-title" ng-hide="loc.changed">Vehicle Search</p>
   <form name="locForm" ng-submit="submit()">
     <table><tbody><tr>
       <td class="loclabel">Postal Code</td>
@@ -9,5 +10,5 @@
       </tr></tbody></table>
     <input class="button small expand submit" type="submit" value="Submit Changes to Search" ng-show="loc.changed">
   </form>
-  <p ng-hide="loc.zipcode">Please fill out the Zipcode field,<br>or enable Location</p>
+  <p ng-hide="locForm.zipcode.$valid">Please fill out the Zipcode field,<br>or enable Location</p>
 </div>
