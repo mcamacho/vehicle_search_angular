@@ -45,7 +45,7 @@
     <script type="text/javascript">
       angular.module('vehicleSearchAngularApp', ['ivpusic.cookie','geolocation', 'nouislider'])
       .constant('_', _)
-      .controller('baseCtrl', function ($scope, $http, ipCookie, geolocation, sourceFactory, dashFactory, collectionFactory, _) {
+      .controller('baseCtrl', function ($scope, $log, $http, ipCookie, geolocation, sourceFactory, dashFactory, collectionFactory, _) {
         // private variables to be used on server query
         var cookieParams = {
           path: '/',
@@ -80,14 +80,14 @@
         };
         // error listener
         $scope.$on('error', function () {
-          console.log('on', arguments)
+          $log.error('on', arguments)
         });
         // update zipcode if undefined or run the app
         if (_.isEmpty($scope.loc.zipcode)) {
-          console.log('expecting zipcode value from geo or user ');
+          $log.info('expecting zipcode value from geo or user ');
           geolocation.getLocation().then(
             function (data){
-              console.log('geo ready',data);
+              $log.info('geo ready',data);
               var geo = { lat:data.coords.latitude, long:data.coords.longitude };
               geo.url = 'http://api.geonames.org/findNearbyPostalCodesJSON?lat='+geo.lat+'&lng='+geo.long+'&username=macamanga';
               $http.get(geo.url)
@@ -95,10 +95,10 @@
                   $scope.loc.zipcode = data.postalCodes[0].postalCode;
                 });
             }, function () {
-              console.log('error',arguments)
+              $log.error('error',arguments)
             });
         } else {
-          console.log('ready to run the zipcode dependent app for ',$scope.loc.zipcode);
+          $log.info('ready to run the zipcode dependent app for ',$scope.loc.zipcode);
           serverCall();
         }
 
@@ -119,10 +119,14 @@
         }
 
         function serverCall() {
-          $http.get('testAll.json', { params: callParams })
-            .success(function (data) {
-              $scope.base.mainData = data;
-            });
+          $http({
+            method: 'GET',
+            url: 'testAll.json',
+            params: callParams
+          })
+          .success(function (data) {
+            $scope.base.mainData = data;
+          });
         }
       });
     </script>

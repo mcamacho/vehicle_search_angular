@@ -1,0 +1,12 @@
+<div id="menu-list" ng-controller="menuSelect" ng-show="loc.zipcode">
+  <div class="">
+    {{menu.test}}
+    <section ng-repeat="(cat, opt) in menu.categoriesI">
+      <div>
+        {{opt.valueLabel}}
+        <select class="" name="radius" ng-model="menu.test[opt.valueKey]" ng-options="key for (key, value) in opt.options"></select>
+      </div>
+    </section>
+  </div>
+  <a href="{home}/vehicle-search-22/#/{{menu.query}}" class="button expand">View {{menu.resultsQty()}} Results</a>
+</div>
