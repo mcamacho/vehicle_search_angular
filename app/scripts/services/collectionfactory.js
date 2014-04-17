@@ -12,7 +12,7 @@ angular.module('vehicleSearchAngularApp')
             return _.has(objVal, 'menu');
           });
           var category = _.mapValues(menuObj, function(objVal, keyVal) {
-            var values = _.pluck(this.list, keyVal);
+            var values = _.remove(_.pluck(this.list, keyVal), function (ele) { return ele !== ''; });
             var countValues = _.countBy(values, function(val) {
               return val;
             });

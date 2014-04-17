@@ -60,6 +60,13 @@ angular.module('vehicleSearchAngularApp')
             valueLabel: 'Transmission'
           }
         },
+        fuelType: {
+          keyval: 'fuel_type',
+          menu: {
+            order: 35,
+            valueLabel: 'Fuel Type'
+          }
+        },
         price: {
           keyval: 'price',
           slideorder: 5
