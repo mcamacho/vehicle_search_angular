@@ -66,9 +66,7 @@ angular.module('vehicleSearchAngularApp')
         var valArray = _.pluck(this.listI, key);
         var cleanArray = [];
         for (var i = valArray.length - 1; i >= 0; i--) {
-          if (valArray[i].search(/[a-zA-Z]/) < 0) {
-            cleanArray.push(parseInt(valArray[i].replace(',', ''), 10));
-          }
+          cleanArray.push(parseInt(valArray[i].replace(',', ''), 10));
         }
         var min = Math.floor(_.min(cleanArray) / 1000) * 1000;
         var max = Math.ceil(_.max(cleanArray) / 1000) * 1000;
