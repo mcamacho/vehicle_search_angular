@@ -37,7 +37,7 @@ angular.module('vehicleSearchAngularApp')
       // constructs GET query string
       getQuery: function() {
         this.query = _.map(this.filterObj, function(value, key) {
-          return key.replace(/([A-Z])/,'_$1').toLowerCase() + '=' + value;
+          return key.replace(/([A-Z])/g,'_$1').toLowerCase() + '=' + value;
         }).join('/');
       },
       // recreates categoriesI based on filterObj

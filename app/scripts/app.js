@@ -1,3 +1,5 @@
+/*global _,jQuery*/
+'use strict';
 angular.module('vehicleSearchAngularApp', ['ivpusic.cookie', 'geolocation', 'nouislider'])
   .constant('_', _)
   .controller('baseCtrl', function ($scope, $window, $log, $http, ipCookie, geolocation, sourceFactory, dashFactory, collectionFactory, _) {
@@ -26,6 +28,23 @@ angular.module('vehicleSearchAngularApp', ['ivpusic.cookie', 'geolocation', 'nou
         callParams.type = sel;
       }
     };
+    function serverCall() {
+      $http({
+        method: 'GET',
+        // method: 'POST',
+        url: 'testAll.json',
+        // url: '{THEME_ROOT}/_ajax.php',
+        params: callParams
+      })
+      .success(function (data) {
+        $scope.base.mainData = _.map(data, function (obj) {
+          obj.price = /^[0-9,.]+$/.test(obj.price) ? obj.price : '0';
+          obj.mileage = /^[0-9,.]+$/.test(obj.mileage) ? obj.mileage : '0';
+          return obj;
+        });
+        $scope.loc.changed = false;
+      });
+    }
     $scope.$watch('vtype.selected', function (oldv,newv) {
       if (oldv !== undefined && oldv !== newv) {
         $scope.loc.changed = true;
@@ -46,6 +65,25 @@ angular.module('vehicleSearchAngularApp', ['ivpusic.cookie', 'geolocation', 'nou
       zipcode: $scope.loc.zipcode,
       radius: $scope.loc.radius
     };
+
+    function updateCookies() {
+      ipCookie('zipcode', $scope.loc.zipcode.toString(), cookieParams);
+      ipCookie('radius', $scope.loc.radius.toString(), cookieParams);
+    }
+    function locChanges(prev, current, scope) {
+      if (prev === undefined) {
+        return false;
+      }
+      var key = _.invert(scope.loc)[prev];
+      if ($scope.cache[key] !== $scope.loc[key]) {
+        $scope.cache[key] = $scope.loc[key];
+        $scope.loc.changed = true;
+        updateCookies();
+        serverCall();
+        jQuery(document).trigger('locupdate');
+      }
+    }
+
     $scope.$watch('loc.zipcode', locChanges);
     $scope.$watch('loc.radius', locChanges);
     /*$scope.submit = function () {
@@ -81,40 +119,4 @@ angular.module('vehicleSearchAngularApp', ['ivpusic.cookie', 'geolocation', 'nou
       serverCall();
     }
 
-    function locChanges(prev, current, scope) {
-      if (prev === undefined) {
-        return false;
-      }
-      var key = _.invert(scope.loc)[prev];
-      if ($scope.cache[key] !== $scope.loc[key]) {
-        $scope.cache[key] = $scope.loc[key];
-        $scope.loc.changed = true;
-        updateCookies();
-        serverCall();
-        jQuery(document).trigger('locupdate');
-      }
-    }
-
-    function updateCookies() {
-      ipCookie('zipcode', $scope.loc.zipcode.toString(), cookieParams);
-      ipCookie('radius', $scope.loc.radius.toString(), cookieParams);
-    }
-
-    function serverCall() {
-      $http({
-        method: 'GET',
-        // method: 'POST',
-        url: 'testAll.json',
-        // url: '{THEME_ROOT}/_ajax.php',
-        params: callParams
-      })
-      .success(function (data) {
-        $scope.base.mainData = _.map(data, function (obj) {
-          obj.price = /^[0-9,.]+$/.test(obj.price) ? obj.price : '0';
-          obj.mileage = /^[0-9,.]+$/.test(obj.mileage) ? obj.mileage : '0';
-          return obj;
-        });
-        $scope.loc.changed = false;
-      });
-    }
   });
