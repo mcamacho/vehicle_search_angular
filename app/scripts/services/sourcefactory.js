@@ -87,8 +87,8 @@ angular.module('vehicleSearchAngularApp')
         keyval: 'evox_id'
       }
     };
-    var _key2 = _.assign(_key1, {
-      exteriorColor: {
+    var _key2 = _.assign(_.omit(_key1, 'exteriorColor'), {
+      extColorGeneric: {
         keyval: 'ext_color_generic',
         menu: {
           order: 25,
@@ -97,8 +97,7 @@ angular.module('vehicleSearchAngularApp')
       }
     });
     return {
-      vehicleKeyV1: _key1,
-      vehicleKeyV2: _key2,
+      vehicleKeyV1: _key2,
       rangeArray: _rangeArray
     };
   });
